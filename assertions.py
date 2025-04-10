@@ -150,3 +150,36 @@ class Assertions:
         assert sorted(actual_ids) == sorted(expected_user_ids), (
             f"Expected user ids for '{field_key}': {expected_user_ids}, but got {actual_ids}"
         )
+
+    @staticmethod
+    def assert_successful_deletion(
+        delete_response: Any,
+        get_after_delete_callable: Any,
+        expected_delete_status: int = 204,
+        expected_get_status: int = 404
+    ) -> None:
+        """
+        Validates successful deletion of an object:
+        1. Checks that the DELETE response has the expected status code (default: 204).
+        2. Ensures the DELETE response body is empty.
+        3. Confirms that a subsequent GET request returns the expected status code (default: 404),
+           indicating that the object no longer exists.
+
+        :param delete_response: The HTTP response from the DELETE request.
+        :param get_after_delete_callable: A callable (e.g. lambda) that performs a GET request to the deleted object by ID.
+        :param expected_delete_status: Expected status code for the DELETE operation (default: 204).
+        :param expected_get_status: Expected status code for the GET request after deletion (default: 404).
+        """
+        # 1. Check DELETE status code
+        Assertions.assert_status_code(delete_response, expected_delete_status)
+
+        # 2. Ensure DELETE response body is empty
+        content = delete_response.content
+        assert not content or content.strip() == b'' or content.strip() == b'null', (
+            f"Expected empty response body on DELETE, but got: {content}"
+        )
+
+        # 3. Check that the object no longer exists
+        get_response = get_after_delete_callable()
+        Assertions.assert_status_code(get_response, expected_get_status)
+
