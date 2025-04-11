@@ -7,7 +7,11 @@ from core.jwt_token.token_service import JWTAuth
 from qa_lib.my_django_client import MyDjangoClient
 from typing import Callable, Any, Tuple, Union
 from datetime import datetime
+import os
+from dotenv import load_dotenv
 
+
+load_dotenv()
 
 # ===========================
 # Fixtures for Authentication
