@@ -1,0 +1,14 @@
+{
+  "mode": "testops",
+  "testops": {
+    "api": {
+      "token": "__QASE_TOKEN__"
+    },
+    "project": "TW"
+  },
+  "framework": {
+    "pytest": {
+      "captureLogs": true
+    }
+  }
+}
